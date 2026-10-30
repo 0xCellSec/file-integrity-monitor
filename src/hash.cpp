@@ -12,47 +12,41 @@ struct Nibble
     uint8_t upper_nibble : 4;
 };
 
-void Hashing::hashSegment(uint8_t* segment,  EVP_MD_CTX* ctx, std::streamsize size)
-{
-    EVP_DigestInit_ex(ctx, EVP_sha256(), NULL);
-    EVP_DigestUpdate(ctx, segment, size);
-    std::cout << "Size: " << size << std::endl;
-}
-
 void Hashing::createCheckSum(std::fstream& infile)
 {
-
     unsigned char hashed_binary_value[32];
 
     EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+    hashFile(ctx, infile);
+
+    // moved the data fom ctx into hashed_value
+    EVP_DigestFinal_ex(ctx, hashed_binary_value, NULL);
+
+    std::string full_text;
+    binaryToText(hashed_binary_value, full_text, sizeof(hashed_binary_value));
+    std::cout << "Hash: " << full_text << std::endl;
+    EVP_MD_CTX_free(ctx);
+}
+
+void Hashing::hashFile(EVP_MD_CTX *ctx, std::fstream &infile)
+{
     uint8_t segment[32];
 
+    EVP_DigestInit_ex(ctx, EVP_sha256(), NULL);
     while (infile)
     {
+        // zeroing out an uint8_t array to erase any retained previous data
         std::fill(std::begin(segment), std::end(segment), 0);
-        infile.read(reinterpret_cast<char *> (segment), 32);
+        infile.read(reinterpret_cast<char *>(segment), 32);
         if (infile.gcount() > 0)
         {
-            std::cout << "Segment: " << segment << std::endl;
-            hashSegment(segment, ctx, infile.gcount());
+            EVP_DigestUpdate(ctx, segment, infile.gcount());
         }
-           
         else
         {
-            std::cout << "END FILE REACHED" << std::endl;
             break;
         }
-
-
-        // moved the data fom ctx into hashed_value
-        EVP_DigestFinal_ex(ctx, hashed_binary_value, NULL);
-
-    
-        std::string full_text;
-        binaryToText(hashed_binary_value, full_text, sizeof(hashed_binary_value));
-        std::cout << "Hash: " << full_text << std::endl;
     }
-    EVP_MD_CTX_free(ctx);
 }
 
 void Hashing::binaryToText(const unsigned char* hashed_value, std::string &full_text, int size)
