@@ -25,11 +25,11 @@ void Hashing::createCheckSum(std::fstream& infile)
     unsigned char hashed_binary_value[32];
 
     EVP_MD_CTX* ctx = EVP_MD_CTX_new();
-   
     uint8_t segment[32];
 
     while (infile)
     {
+        std::fill(std::begin(segment), std::end(segment), 0);
         infile.read(reinterpret_cast<char *> (segment), 32);
         if (infile.gcount() > 0)
         {
