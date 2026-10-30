@@ -3,6 +3,7 @@
 #include <openssl/evp.h>
 #include <iostream> 
 #include <fstream>
+#include <algorithm>
 
 
 struct Nibble  
@@ -15,6 +16,7 @@ void Hashing::hashSegment(uint8_t* segment,  EVP_MD_CTX* ctx, std::streamsize si
 {
     EVP_DigestInit_ex(ctx, EVP_sha256(), NULL);
     EVP_DigestUpdate(ctx, segment, size);
+    std::cout << "Size: " << size << std::endl;
 }
 
 void Hashing::createCheckSum(std::fstream& infile)
@@ -28,11 +30,11 @@ void Hashing::createCheckSum(std::fstream& infile)
 
     while (infile)
     {
-    infile.read(reinterpret_cast<char *> (segment), 32);
+        infile.read(reinterpret_cast<char *> (segment), 32);
         if (infile.gcount() > 0)
         {
             std::cout << "Segment: " << segment << std::endl;
-    hashSegment(segment, ctx, infile.gcount());
+            hashSegment(segment, ctx, infile.gcount());
         }
            
         else
@@ -42,13 +44,14 @@ void Hashing::createCheckSum(std::fstream& infile)
         }
 
 
-    // moved the data fom ctx into hashed_value
-    EVP_DigestFinal_ex(ctx, hashed_binary_value, NULL);
+        // moved the data fom ctx into hashed_value
+        EVP_DigestFinal_ex(ctx, hashed_binary_value, NULL);
 
-   
-    std::string full_text;
-    binaryToText(hashed_binary_value, full_text, sizeof(hashed_binary_value));
-    std::cout << full_text << std::endl;
+    
+        std::string full_text;
+        binaryToText(hashed_binary_value, full_text, sizeof(hashed_binary_value));
+        std::cout << "Hash: " << full_text << std::endl;
+    }
     EVP_MD_CTX_free(ctx);
 }
 
