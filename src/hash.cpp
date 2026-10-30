@@ -26,8 +26,21 @@ void Hashing::createCheckSum(std::fstream& infile)
    
     uint8_t segment[32];
 
+    while (infile)
+    {
     infile.read(reinterpret_cast<char *> (segment), 32);
+        if (infile.gcount() > 0)
+        {
+            std::cout << "Segment: " << segment << std::endl;
     hashSegment(segment, ctx, infile.gcount());
+        }
+           
+        else
+        {
+            std::cout << "END FILE REACHED" << std::endl;
+            break;
+        }
+
 
     // moved the data fom ctx into hashed_value
     EVP_DigestFinal_ex(ctx, hashed_binary_value, NULL);
