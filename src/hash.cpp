@@ -12,7 +12,7 @@ struct Nibble
     uint8_t upper_nibble : 4;
 };
 
-void Hashing::createCheckSum(std::fstream& infile)
+std::string Hashing::createCheckSum(std::fstream& infile)
 {
     unsigned char hashed_binary_value[32];
 
@@ -26,6 +26,8 @@ void Hashing::createCheckSum(std::fstream& infile)
     binaryToText(hashed_binary_value, full_text, sizeof(hashed_binary_value));
     std::cout << "Hash: " << full_text << std::endl;
     EVP_MD_CTX_free(ctx);
+
+    return (full_text);
 }
 
 void Hashing::hashFile(EVP_MD_CTX *ctx, std::fstream &infile)

@@ -7,7 +7,7 @@
 namespace Hashing
 {
 
-    void createCheckSum(std::fstream &file);
+    std::string createCheckSum(std::fstream &file);
     void hashFile(EVP_MD_CTX *ctx, std::fstream &infile);
     void binaryToText(const unsigned char* hashed_value, std::string &full_text, int size);
 };
