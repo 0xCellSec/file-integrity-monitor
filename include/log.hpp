@@ -6,7 +6,7 @@
 namespace DatabaseLogging
 {
     void initDatabase();
-    void logCheckSum(sqlite3* database, std::string origin_file_path, std::string file_checksum);
+    void logCheckSum(std::string origin_file_path, std::string file_checksum);
 }
 
 #endif
