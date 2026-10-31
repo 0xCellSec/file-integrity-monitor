@@ -3,10 +3,9 @@
 #include <sqlite3.h>
 #include <iostream> 
 
-void DatabaseLogging::initDatabase()
+
+void DatabaseLogging::initDatabase(sqlite3* database, const char* database_path)
 {
-    sqlite3* database;
-    const char*  DATABASE_PATH = "database.db";
 
     const std::string SCHEMA = R"schema(
     CREATE TABLE IF NOT EXISTS monitored_files (
@@ -20,7 +19,7 @@ void DatabaseLogging::initDatabase()
     CREATE INDEX IF NOT EXISTS idx_file_path ON monitored_files(file_path);
     )schema";
 
-    int exit = sqlite3_open(DATABASE_PATH, &database);
+    int exit = sqlite3_open(database_path, &database);
     char * messsageError;
 
     exit = sqlite3_exec(database, SCHEMA.c_str(), NULL, 0, &messsageError);
@@ -39,7 +38,7 @@ void DatabaseLogging::initDatabase()
     return;
 }
 
-void DatabaseLogging::logCheckSum(sqlite3* database, std::string origin_file_path, std::string file_checksum)
+void DatabaseLogging::logCheckSum(sqlite3* database, const char* database_path, std::string origin_file_path, std::string file_checksum)
 {
 
 }
