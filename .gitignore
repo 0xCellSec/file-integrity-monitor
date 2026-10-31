@@ -1,5 +1,8 @@
 .vscode
 
+# database file
+database.db
+
 # Prerequisites
 *.d
 
