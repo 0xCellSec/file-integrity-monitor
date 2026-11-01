@@ -6,7 +6,7 @@
 void ThreatSimulator::modifyFile(std::string target_file_path)
 {
     std::cout << "Modifying: " << target_file_path << std::endl;
-    const char* actor_input = "file modified here";
+    const char* modification_content = "file modified here";
     std::fstream outfile(target_file_path, std::ios::out | std::ios::app);
     if (!outfile.is_open())
     {
@@ -14,7 +14,7 @@ void ThreatSimulator::modifyFile(std::string target_file_path)
             return;
     }
     
-    outfile << actor_input << std::endl;
+    outfile << modification_content << std::endl;
     outfile.close();
     return;
 }
