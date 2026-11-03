@@ -1,4 +1,5 @@
 #include "log.hpp"
+#include "hash.hpp"
 
 #include <sqlite3.h>
 #include <iostream>
@@ -114,4 +115,28 @@ void DatabaseLogging::logCheckSum(sqlite3* database, const char* database_path, 
     sqlite3_finalize(statement);
     sqlite3_close(database);
     return;
+}
+
+bool DatabaseLogging::monitorFiles(sqlite3* database, const char* database_path)
+{
+    bool is_file_integrity_comprimised = true;
+    file_map map = fetchFileDataMap(database, database_path);
+
+    for(auto& it: map)
+    {
+        Files database_info{it.second[0]};
+        std::fstream infile (database_info.file_path, std::ios_base::in | std::ios_base::binary);
+
+        std::string new_hash = Hashing::createCheckSum(infile);
+        if (new_hash != database_info.file_hash)
+        {
+            std::cout << "HASH DOESNT MATCH" << std::endl;
+            std::cout << "old hash: " << database_info.file_hash << std::endl;
+            std::cout << "new hash: " << new_hash << std::endl;
+
+            is_file_integrity_comprimised = false;
+        }
+        
+    }
+    return is_file_integrity_comprimised;    
 }
