@@ -13,6 +13,7 @@ namespace DatabaseLogging
     file_map fetchFileDataMap(sqlite3* database, const char* database_path);
     void initDatabase(sqlite3* database, const char* database_path);
     void logCheckSum(sqlite3* database, const char* database_path, std::string origin_file_path, std::string file_checksum);
+    bool monitorFiles(sqlite3* database, const char* database_path);
 }
 
 #endif
