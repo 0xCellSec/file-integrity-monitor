@@ -1,5 +1,6 @@
 #include "hash.hpp"
 #include "log.hpp"
+#include "file_changer.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -33,6 +34,14 @@ int main()
         DatabaseLogging::logCheckSum(database, database_path,absolute_file_path, file_hash);
 
     }
+    std::this_thread::sleep_for(1000ms);
+
+    for (const auto& entry : std::filesystem::directory_iterator(folder_iterable))
+    {
+        ThreatSimulator::modifyFile(entry.path());
+    }
+    DatabaseLogging::monitorFiles(database, database_path);
+
     return 1;
    
 }
